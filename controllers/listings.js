@@ -49,13 +49,30 @@ module.exports.showListing = async (req, res) => {
 };
 
 // Create Listing
+// Create Listing
 module.exports.createListing = async (req, res, next) => {
   const { location, country } = req.body.listing;
 
+  const query = encodeURIComponent(`${location}, ${country}`);
   const geoResponse = await fetch(
-    `https://nominatim.openstreetmap.org/search?format=json&q=${location},${country}`
+    `https://nominatim.openstreetmap.org/search?format=json&q=${query}`,
+    {
+      headers: {
+        'User-Agent': 'WanderlustProject/1.0 (student-project)',
+      },
+    }
   );
-  const geoData = await geoResponse.json();
+
+  const geoText = await geoResponse.text();
+  let geoData;
+
+  try {
+    geoData = JSON.parse(geoText);
+  } catch (err) {
+    console.error('Nominatim error response:', geoText);
+    req.flash('error', 'Location service unavailable. Please try again.');
+    return res.redirect('/listings/new');
+  }
 
   if (!geoData || geoData.length === 0) {
     req.flash(
@@ -74,10 +91,7 @@ module.exports.createListing = async (req, res, next) => {
 
   newListing.geometry = {
     type: 'Point',
-    coordinates: [
-      parseFloat(geoData[0].lon), // longitude
-      parseFloat(geoData[0].lat), // latitude
-    ],
+    coordinates: [parseFloat(geoData[0].lon), parseFloat(geoData[0].lat)],
   };
 
   await newListing.save();

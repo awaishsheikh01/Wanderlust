@@ -131,7 +131,3 @@ body {
   padding-left: 0;
   padding-right: 0;
 }
-/* Nice hover effect – LinkedIn icon */
-.f-info-socials a:hover .fa-linkedin {
-  color: #0a66c2;
-}

@@ -37,21 +37,9 @@
       >Edit</a
     >
     <!-- Delete button  -->
-    <% if (
-  currentUser &&
-  review.author &&
-  String(review.author._id) === String(currentUser._id)
-) { %>
-  <form
-    action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE"
-    method="POST"
-    class="d-inline"
-  >
-    <button class="btn btn-danger btn-sm">Delete</button>
-  </form>
-<% } %>
-
-
+    <form method="POST" action="/listings/<%= listing._id %>?_method=DELETE">
+      <button class="btn btn-dark offset-5">Delete</button>
+    </form>
   </div>
 
 <% } %>
